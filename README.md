@@ -1,12 +1,23 @@
-# Sprint Notes
+<p align="center">
+  <img src="build/icon.png" width="128" height="128" alt="Sprint Notes icon">
+</p>
 
-A macOS app for day-to-day task notes: Today / This Week / This Month checklists in a rich-text editor, with sprint archives you can search and export. Notes are plain markdown files in a folder you choose.
+<h1 align="center">Sprint Notes</h1>
+
+<p align="center">A macOS app for day-to-day task notes: Today / This Week / This Month checklists in a rich-text editor, with sprint archives you can search and export. Notes are plain markdown files in a folder you choose.</p>
+
+![Sprint Notes in the dark theme, showing Today, This Week and This Month checklists with nested notes and Jira issue links](docs/screenshots/main-dark.png)
+
+<p>
+  <img src="docs/screenshots/light-commands.png" width="49%" alt="Light theme with a purple accent, the This Week section folded and the slash command menu open">
+  <img src="docs/screenshots/settings.png" width="49%" alt="Settings dialog with Jira address, sprint length, colour mode and accent presets">
+</p>
 
 ## Install
 
 You build the app once from source, then use it like any other Mac app. You need macOS and [Node.js](https://nodejs.org) 18 or later.
 
-    git clone <this repo>
+    git clone https://github.com/cooleo400/sprint-notes.git
     cd sprint-notes
     npm install
     npm run dist
