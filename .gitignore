@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Generated from src/ by `npm run build:ui` (esbuild bundle loaded by index.html)
+dist/
+
+# Packaged app and installer from `npm run dist`
+release/
+
+# Unit test bundle from `npm run test:unit`
+.test-build/
+
+# Local scratch files
+.scratch/
+
+# OS and editor clutter
+.DS_Store
+*.log
+.vscode/
+.idea/

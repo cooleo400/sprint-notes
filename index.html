@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<title>Sprint Notes</title>
+<style>
+:root{--bg:#1c1c1e;--side:#242426;--line:#333336;--text:#e8e6e3;--mute:#8b8b90;--accent:#4aa3ff;--hover:#2e2e31;--on-accent:#06121f;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{display:flex;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}
+aside{width:240px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:44px 10px 10px;-webkit-app-region:drag}
+aside>*{-webkit-app-region:no-drag}
+aside h1{font-size:13px;margin:0 8px 10px;color:var(--mute);font-weight:600}
+#q{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 8px;margin-bottom:10px;font:inherit}
+#q:focus,#add:focus{outline:2px solid var(--accent);outline-offset:-1px}
+ul{list-style:none;margin:0;padding:0}
+.nav li{padding:6px 8px;border-radius:6px;cursor:pointer}
+.nav li:hover{background:var(--hover)}.nav li.on{background:color-mix(in srgb,var(--text) 12%,var(--side))}
+.nav li.empty{color:var(--mute);cursor:default;background:none}
+.nav li.menu{outline:1px solid var(--accent);outline-offset:-1px}
+.nav h2{font-size:12px;color:var(--mute);margin:14px 8px 4px;font-weight:600}
+#arch{overflow:auto;flex:1}
+#folder{margin-top:8px;background:none;border:0;color:var(--mute);text-align:left;padding:6px 8px;cursor:pointer;font:inherit;font-size:12px}
+#folder:hover,#settings:hover{color:var(--text)}
+#foot{display:flex;align-items:center;margin-top:8px}#foot #folder{flex:1;margin-top:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#settings{background:none;border:0;color:var(--mute);padding:6px 8px;font-size:15px}
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+header{display:flex;align-items:center;gap:10px;padding:14px 24px 10px;border-bottom:1px solid var(--line);-webkit-app-region:drag}
+header>*{-webkit-app-region:no-drag}
+#title{font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#status{color:var(--mute);font-size:12px}
+button,select{background:var(--hover);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font:inherit;cursor:pointer}
+button:hover{border-color:var(--mute)}button:focus-visible{outline:2px solid var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+button.icon{display:inline-flex;align-items:center;justify-content:center;padding:5px 8px}
+#autoend{display:inline-flex;align-items:center;gap:6px;color:var(--mute);font-size:12px;white-space:nowrap;cursor:pointer}
+#autoend input[type=checkbox]{margin:0;accent-color:var(--accent)}
+#autodate{background:var(--hover);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font:inherit;font-size:12px}
+#autoend:not(:has(#autoon:checked)) #autodate{opacity:.6}
+#bar{display:flex;gap:8px;padding:10px 24px;border-bottom:1px solid var(--line)}
+#add{flex:1;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:5px 10px;font:inherit}
+#editor{flex:1;overflow:auto}
+#pv{flex:1;overflow:auto;padding:24px max(24px,calc((100% - 760px)/2))}
+#pv h2{font-size:20px;margin:0 0 12px}
+#fmt{display:flex;gap:4px;padding:6px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#fmt button{padding:3px 9px;min-width:30px}
+#fmt i{width:1px;background:var(--line);margin:2px 4px}
+#editor .tiptap{max-width:760px;margin:0 auto;padding:24px;min-height:100%;outline:none;font-size:15px;line-height:1.7;caret-color:var(--text)}
+.tiptap>*:first-child{margin-top:0}
+/* Same spacing for a line at any nesting depth, so Tab / Shift+Tab never move text vertically: lines are
+   spaced with padding (which never collapses or changes inside list items) and lists carry no margins. */
+.tiptap p{margin:0;padding:2px 0}
+.tiptap h1{font-size:1.9em;line-height:1.3;margin:.6em 0 .3em}
+.tiptap h2{font-size:1.55em;line-height:1.35;margin:.8em 0 .3em}
+.tiptap h3{font-size:1.25em;font-weight:650;margin:.6em 0 .2em}
+.tiptap s{color:var(--mute)}
+.tiptap code{background:var(--hover);border-radius:4px;padding:1px 4px;font:.9em ui-monospace,Menlo,monospace}
+.tiptap pre{background:var(--hover);border-radius:6px;padding:10px 12px;font:.9em/1.6 ui-monospace,Menlo,monospace}
+.tiptap pre code{background:none;padding:0}
+.tiptap a{color:var(--accent);cursor:pointer;text-decoration:none}.tiptap a:hover{text-decoration:underline}
+.tiptap blockquote{border-left:3px solid var(--line);margin:.4em 0;padding-left:12px;color:var(--mute)}
+.tiptap hr{border:0;border-top:1px solid var(--line);margin:.8em 0}
+.tiptap ul,.tiptap ol{margin:0;padding-left:1.5em}
+.tiptap ul{list-style:disc}.tiptap ul ul{list-style:circle}.tiptap ul ul ul{list-style:square}
+.tiptap li::marker{color:var(--mute)}
+.tiptap ul[data-type=taskList]{list-style:none;padding-left:.2em}
+.tiptap ul[data-type=taskList] ul[data-type=taskList]{padding-left:1.5em}
+/* TipTap 3 does not mark task <li>s with data-type, so reach them through their list. */
+.tiptap ul[data-type=taskList]>li{display:flex;align-items:flex-start;gap:8px}
+.tiptap ul[data-type=taskList]>li>label{flex:0 0 auto;margin-top:calc(2px + (1.7em - 15px) / 2);line-height:0;user-select:none}
+.tiptap ul[data-type=taskList]>li>div{flex:1;min-width:0}
+.tiptap ul[data-type=taskList]>li>label>input{width:15px;height:15px;margin:0;accent-color:var(--accent);cursor:pointer}
+.tiptap li[data-checked=true]>div>p{color:var(--mute);text-decoration:line-through}
+.tiptap[contenteditable=false] input[type=checkbox]{pointer-events:none;opacity:.7}
+.tiptap h2{position:relative}
+.fold-toggle{position:absolute;left:-26px;top:50%;transform:translateY(-50%);width:22px;height:22px;padding:0;border:0;border-radius:4px;background:none;color:var(--mute);font-size:14px;line-height:22px;cursor:pointer;opacity:.45}
+.tiptap h2:hover .fold-toggle,.fold-toggle[aria-expanded=false]{opacity:1}
+.fold-toggle:hover{background:var(--hover);color:var(--text)}
+.fold-count{margin-left:10px;font-size:13px;font-weight:400;color:var(--mute);user-select:none}
+.fold-hidden{display:none!important}
+.slash{position:fixed;z-index:10;margin:0;padding:4px 0;min-width:180px;background:var(--side);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px #0006;font-size:13px}
+.slash li{padding:4px 12px;cursor:pointer}.slash li.on{background:var(--accent);color:var(--on-accent)}
+#linkdlg input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 8px;font:inherit;margin-bottom:12px}
+.hit{padding:8px 10px;border-radius:6px;cursor:pointer}.hit:hover{background:var(--hover)}
+.hit small{display:block;color:var(--mute)}
+dialog{background:var(--side);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:20px;max-width:420px}
+dialog::backdrop{background:#0008}
+#settingsdlg{max-width:480px}
+.settings{display:flex!important;flex-direction:column;flex-wrap:nowrap!important;width:440px;max-width:100%;max-height:calc(100vh - 80px)}
+.settings .scroll{flex:1 1 auto;min-height:0;overflow:hidden auto;margin-right:-8px;padding-right:8px}.settings h3{margin:0 0 12px;font-size:16px}
+.settings fieldset{min-width:0;border:1px solid var(--line);border-radius:8px;margin:0 0 12px;padding:8px 12px 4px}.settings legend{color:var(--mute);font-size:12px;padding:0 4px}
+.settings label{display:block;font-size:13px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 12px}
+.seg button{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 6px}
+.seg svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.seg button[aria-checked=true]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.sublabel{font-size:13px;margin-bottom:6px}
+#presets{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+#presets button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px;min-width:60px;font-size:12px;background:none;border-color:transparent}
+#presets button i{width:26px;height:26px;border-radius:50%;box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--line)}
+#presets button[aria-checked=true]{border-color:var(--line);background:var(--hover)}
+#presets button[aria-checked=true] i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--text)}
+#advanced{margin-bottom:10px}#advanced summary{cursor:pointer;font-size:13px;color:var(--mute);margin-bottom:6px}#advanced summary:hover{color:var(--text)}
+#colors{display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px 12px;align-items:center;margin:6px 0 10px}
+#colors input{width:44px;height:26px;padding:0 2px;border:1px solid var(--line);border-radius:6px;background:var(--bg);cursor:pointer}
+#resetcolors{margin-bottom:10px}
+.btns{display:flex;gap:8px;justify-content:flex-end}dialog p{margin:0 0 16px}
+dialog form{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+#exsel{margin-bottom:8px}
+#rname{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 8px;font:inherit}
+#rerr,.err{margin:6px 0 4px;min-height:1.2em;font-size:12px;color:#ff8a80}
+.field{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 8px;font:inherit;margin:4px 0 10px}
+.jira-link{color:var(--accent);cursor:pointer;border-bottom:1px dotted var(--accent)}.jira-link:hover{border-bottom-style:solid}
+select:focus-visible,dialog input:focus-visible{outline:2px solid var(--accent);outline-offset:-1px}
+[hidden]{display:none!important}
+</style></head>
+<body>
+<aside>
+  <h1>Sprint Notes</h1>
+  <input id="q" type="search" placeholder="Search all notes (⌘K)">
+  <ul class="nav"><li data-f="current.md" id="curnav">Current sprint</li><h2>Archive</h2></ul>
+  <ul class="nav" id="arch"></ul>
+  <div id="foot"><button id="folder" title="Change notes folder"></button><button id="settings" title="Settings" aria-label="Settings">⚙︎</button></div>
+</aside>
+<main>
+  <header>
+    <span id="title"></span><span id="status"></span>
+    <button id="export" class="icon" title="Export notes to a markdown file" aria-label="Export"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.2V1.6M5 4.5 8 1.6l3 2.9"/><path d="M5.6 6.4H4.2a1 1 0 0 0-1 1v6.4a1 1 0 0 0 1 1h7.6a1 1 0 0 0 1-1V7.4a1 1 0 0 0-1-1h-1.4"/></svg></button>
+    <label id="autoend" title="When on, the sprint ends by itself the first time the app is open on or after this date. Unfinished tasks carry over."><input type="checkbox" id="autoon"> Auto end sprint at: <input type="date" id="autodate" aria-label="Auto end date"></label>
+    <button id="end" class="primary">End sprint</button>
+  </header>
+  <div id="bar">
+    <select id="sec"><option>Today</option><option>This Week</option><option>This Month</option></select>
+    <input id="add" placeholder="Quick add a task (⌘N) and press Enter  ·  or type / in the editor for commands">
+  </div>
+  <div id="fmt">
+    <button data-cmd="bold" title="Bold (⌘B)"><b>B</b></button><button data-cmd="italic" title="Italic (⌘I)"><i>I</i></button><button data-cmd="strike" title="Strikethrough (⇧⌘X)"><s>S</s></button><button data-cmd="code" title="Inline code (⌘E)">&lt;/&gt;</button><button data-cmd="link" title="Link (⌘L)">Link</button><i></i>
+    <button data-cmd="h1" title="Heading 1 (⌥⌘1)">H1</button><button data-cmd="h2" title="Heading 2 (⌥⌘2)">H2</button><button data-cmd="h3" title="Heading 3 (⌥⌘3)">H3</button><i></i>
+    <button data-cmd="check" title="To-do (⌘T / Ctrl+T; ⌘↩ toggles done)">☑</button><button data-cmd="bullet" title="Bullet list">•</button><button data-cmd="number" title="Numbered list">1.</button><button data-cmd="quote" title="Quote">❝</button><button data-cmd="codeblock" title="Code block">{ }</button><button data-cmd="rule" title="Divider">―</button>
+  </div>
+  <div id="editor"></div>
+  <div id="pv" hidden></div>
+</main>
+<dialog id="dlg"><form method="dialog">
+  <p id="dmsg" style="flex:1 0 100%"></p>
+  <button value="cancel">Cancel</button>
+  <button value="archive" id="darch">Archive as not done</button>
+  <button value="carry" class="primary" id="dcarry">Carry over</button>
+</form></dialog>
+<dialog id="linkdlg"><form method="dialog">
+  <input id="linkurl" placeholder="https://" autocomplete="off" style="flex:1 0 100%">
+  <button value="cancel">Cancel</button>
+  <button value="ok" class="primary">Add link</button>
+</form></dialog>
+<dialog id="exportdlg"><form method="dialog">
+  <label for="exsel" style="flex:1 0 100%">Export to a markdown file</label>
+  <select id="exsel" style="flex:1 0 100%"></select>
+  <button value="cancel">Cancel</button>
+  <button value="ok" class="primary">Export…</button>
+</form></dialog>
+<dialog id="confirmdlg"><form method="dialog">
+  <p id="cmsg" style="flex:1 0 100%"></p>
+  <button value="cancel">Cancel</button>
+  <button value="ok" class="primary" id="cok">OK</button>
+</form></dialog>
+<dialog id="renamedlg"><form method="dialog">
+  <label for="rname" style="flex:1 0 100%">Rename archived sprint (the date stays in front)</label>
+  <input id="rname" autocomplete="off" style="flex:1 0 100%">
+  <p id="rerr" role="alert" style="flex:1 0 100%"></p>
+  <button value="cancel" formnovalidate>Cancel</button>
+  <button value="ok" class="primary">Rename</button>
+</form></dialog>
+<dialog id="settingsdlg"><form method="dialog" class="settings">
+  <h3>Settings</h3>
+  <div class="scroll">
+  <fieldset><legend>Jira</legend>
+    <label for="jbase">Jira address, so issue keys like ABC-123 become links</label>
+    <input id="jbase" class="field" placeholder="https://yourcompany.atlassian.net" autocomplete="off">
+    <label for="jkeys">Project keys (optional, comma separated; blank links any key)</label>
+    <input id="jkeys" class="field" placeholder="ABC, DEF" autocomplete="off">
+  </fieldset>
+  <fieldset><legend>Sprints</legend>
+    <label for="sweeks">Sprint length (used for the auto end date)</label>
+    <select id="sweeks" class="field"></select>
+  </fieldset>
+  <fieldset><legend>Theme</legend>
+    <div class="seg" id="modes" role="radiogroup" aria-label="Color mode">
+      <button type="button" role="radio" data-mode="light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>Light</button>
+      <button type="button" role="radio" data-mode="dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>Dark</button>
+      <button type="button" role="radio" data-mode="system"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.2"/><path d="M5.5 13.8h5M8 11v2.8"/></svg>System</button>
+    </div>
+    <div class="sublabel" id="presetlabel">Accent</div>
+    <div id="presets" role="radiogroup" aria-labelledby="presetlabel"></div>
+    <details id="advanced">
+      <summary>Advanced colors</summary>
+      <div id="colors"></div>
+      <button type="button" id="resetcolors">Reset colors</button>
+    </details>
+  </fieldset>
+  </div>
+  <p id="serr" role="alert" class="err"></p>
+  <div class="btns"><button value="cancel" formnovalidate>Cancel</button><button value="ok" class="primary">Save</button></div>
+</form></dialog>
+<script src="dist/app.js"></script>
+</body></html>
